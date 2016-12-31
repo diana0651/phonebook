@@ -70,18 +70,29 @@ int main(int argc, char *argv[])
 
     /* the givn last name to find */
     char input[MAX_LAST_NAME_SIZE] = "zyxel";
-    e = pHead;
-
-    assert(findName(input, e) &&
-           "Did you implement findName() in " IMPL "?");
-    assert(0 == strcmp(findName(input, e)->lastName, "zyxel"));
+#if defined (SMAZ)
+     char input_compressed[100];
+     memset(input_compressed,sizeof(input_compressed),'\0');
+     smaz_compress(input, strlen(input), input_compressed, sizeof(input_compressed));
+     assert(findName(input_compressed, e) &&
+            "Did you implement findName() in " IMPL "?");
+     assert(0 == strcmp(findName(input_compressed, e)->lastName, input_compressed));
+ #else
+     assert(findName(input, e) &&
+             "Did you implement findName() in " IMPL "?");  
+      assert(0 == strcmp(findName(input, e)->lastName, "zyxel")); 
+ #endif
 
 #if defined(__GNUC__)
     __builtin___clear_cache((char *) pHead, (char *) pHead + sizeof(entry));
 #endif
     /* compute the execution time */
     clock_gettime(CLOCK_REALTIME, &start);
+#if defined(SMAZ)
+    findName(input_compressed, e);   
+#else
     findName(input, e);
+#endif
     clock_gettime(CLOCK_REALTIME, &end);
     cpu_time2 = diff_in_second(start, end);
 
@@ -90,6 +101,8 @@ int main(int argc, char *argv[])
     output = fopen("opt.txt", "a");
 #elif defined(HASH)
     output = fopen("hash.txt", "a");
+#elif defined(SMAZ)
+    output = fopen("smaz.txt", "a");
 #else
     output = fopen("orig.txt", "a");
 #endif
