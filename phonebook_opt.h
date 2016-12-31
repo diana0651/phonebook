@@ -21,14 +21,12 @@ typedef struct __DETAIL_ENTRY {
 } detailEntry;
 
 typedef struct __PHONE_BOOK_ENTRY {
-    char lastName[MAX_LAST_NAME_SIZE];\
+    char lastName[MAX_LAST_NAME_SIZE];
     struct __DETAIL_ENTRY *pDetail;
     struct __PHONE_BOOK_ENTRY *pNext;
 } entry;
 
 entry *findName(char lastName[], entry *pHead);
 entry *append(char lastName[], entry *e);
-
-unsigned int hashfunction(char *str);
 
 #endif
